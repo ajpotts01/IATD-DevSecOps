@@ -11,6 +11,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
+          # Locking to specific Python version
+          # The '3.x' specified in the lab grabs newest Python version
+          # which has conflicts with Flask-SQLAlchemy pinned in requirements.txt
           python-version: '3.11'
       - name: Install dependencies
         run: |
