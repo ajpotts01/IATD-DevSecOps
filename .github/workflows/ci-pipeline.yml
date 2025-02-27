@@ -154,7 +154,7 @@ jobs:
           path: report_json.json
 
   build:
-    needs: [sonarqube, dast]
+    needs: [sonarqube, dast, image-scan]
     permissions:
       id-token: write
     runs-on: ubuntu-latest
@@ -175,7 +175,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-labs:latest
 
   submit_results:
-    needs: build
+    needs: [build]
     if: true
     runs-on: ubuntu-latest
     steps:
@@ -203,6 +203,11 @@ jobs:
           name: zap-report
           path: ${{ github.workspace }}
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-report
+          path: ${{ github.workspace }}
+
       - name: Upload reports
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -223,3 +228,8 @@ jobs:
                         --data-binary @$GITHUB_WORKSPACE/report_json.json \
                         https://devsecops-ver.azurewebsites.net/api/week3-zap-report)
           echo "Zap upload: $ZAP_RESPONSE"
+          IMAGE_RESPONSE=$(curl -X POST \
+                          -H "Authorization: Bearer $AZURE_ACCESS_TOKEN" \
+                          --data-binary @$GITHUB_WORKSPACE/results.json \
+                          https://devsecops-ver.azurewebsites.net/api/week4-image-report)
+          echo "Image report upload: $IMAGE_RESPONSE"
