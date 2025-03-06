@@ -242,7 +242,7 @@ jobs:
           cosign sign --yes ${IMAGE}
 
   submit_results:
-    needs: [security_gate]
+    needs: [build]
     if: true
     runs-on: ubuntu-latest
     steps:
@@ -300,3 +300,7 @@ jobs:
                           --data-binary @$GITHUB_WORKSPACE/results.json \
                           https://devsecops-ver.azurewebsites.net/api/week4-image-report)
           echo "Image report upload: $IMAGE_RESPONSE"
+          WEEK5_RESPONSE=$(curl -X POST \
+                          -H "Authorization: Bearer $AZURE_ACCESS_TOKEN" \
+                          -d "$IMAGE" https://devsecops-ver.azurewebsites.net/api/week5-report)
+          echo "Week5 report upload: $WEEK5_RESPONSE"
