@@ -304,3 +304,7 @@ jobs:
                           -H "Authorization: Bearer $AZURE_ACCESS_TOKEN" \
                           -d "$IMAGE" https://devsecops-ver.azurewebsites.net/api/week5-report)
           echo "Week5 report upload: $WEEK5_RESPONSE"
+          MODEL_RESPONSE=$(curl -X POST \
+                          -H "Authorization: Bearer $AZURE_ACCESS_TOKEN" \
+                          --data-binary @$GITHUB_WORKSPACE/threat-model/ci-pipeline.json \
+                          https://devsecops-ver.azurewebsites.net/api/week6-report)

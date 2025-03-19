@@ -2,3 +2,4 @@
 .venv/
 enumerate.py
 __pycache__/
+.env
