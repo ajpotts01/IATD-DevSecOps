@@ -155,7 +155,7 @@ jobs:
 
   security_gate:
     needs: [sonarqube, dast, image-scan]
-    if: false
+    if: true
     runs-on: ubuntu-latest
     steps:
       - name: Download sonarqube-report
@@ -211,7 +211,7 @@ jobs:
           echo "All security gates passed."
 
   build:
-    needs: [sonarqube, dast, image-scan]
+    needs: [security_gate]
     permissions:
       id-token: write
     runs-on: ubuntu-latest
@@ -242,7 +242,7 @@ jobs:
           cosign sign --yes ${IMAGE}
 
   submit_results:
-    needs: [build]
+    needs: [sonarqube, dast, image-scan]
     if: true
     runs-on: ubuntu-latest
     steps:
